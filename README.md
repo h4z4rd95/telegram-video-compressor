@@ -2,6 +2,37 @@
 
 A Telegram bot that validates video URLs, downloads the videos, compresses them using FFMPEG, and shares the compressed video back with the user.  
 
+## Web App Bootstrap
+
+This repository now also includes a monorepo-ready Next.js web app scaffold in `apps/web`.
+
+- Framework: Next.js 15 with the App Router
+- Test runner: Vitest with Testing Library
+- Styling base: Tailwind CSS and global app styles
+
+### Web App Quick Start
+
+1. Install the web app dependencies:
+
+   ```bash
+   cd apps/web
+   npm install
+   ```
+
+2. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+3. Run the smoke test:
+
+   ```bash
+   npm test -- homepage
+   ```
+
+The initial homepage lives in `apps/web/src/app/page.tsx` and renders the base product headline for the web experience.
+
 ## Features
 
 - Validates user-submitted URLs to ensure they are valid and accessible.
