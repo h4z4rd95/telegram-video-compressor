@@ -1,132 +1,99 @@
-# Telegram Video Compressor Bot (telegram-video-compressor)
+# Web Video Compressor
 
-A Telegram bot that validates video URLs, downloads the videos, compresses them using FFMPEG, and shares the compressed video back with the user.  
+This repository has been cut over from the legacy Python Telegram bot to a Next.js web application in `apps/web`.
 
-## Web App Bootstrap
+## Current App
 
-This repository now also includes a monorepo-ready Next.js web app scaffold in `apps/web`.
+- Frontend and server: Next.js 15 App Router
+- Auth: `next-auth` with Google, email, and Telegram-oriented credential scaffolding
+- Data layer: Prisma with PostgreSQL
+- Background infra targets: Redis queueing and S3-compatible object storage
+- Tests: Vitest with unit, integration, UI, and smoke coverage
 
-- Framework: Next.js 15 with the App Router
-- Test runner: Vitest with Testing Library
-- Styling base: Tailwind CSS and global app styles
+## Repository Layout
 
-### Web App Quick Start
+- `apps/web`: main product web app
+- `docker-compose.yml`: local PostgreSQL, Redis, and MinIO services
+- `.env.example`: example environment variables for local setup
+- `bot.py`: deprecated legacy entrypoint kept only to fail fast with a migration message
+- `docs/superpowers/plans/2026-09-18-web-video-compressor-saas.md`: implementation plan
 
-1. Install the web app dependencies:
+## Local Setup
+
+1. Start local infrastructure:
+
+   ```bash
+   docker compose up -d
+   ```
+
+2. Copy the example environment file:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Install web app dependencies:
 
    ```bash
    cd apps/web
    npm install
    ```
 
-2. Start the development server:
+4. Run the development server:
 
    ```bash
    npm run dev
    ```
 
-3. Run the smoke test:
+5. Run the test suite:
 
    ```bash
-   npm test -- homepage
+   npm test
    ```
 
-The initial homepage lives in `apps/web/src/app/page.tsx` and renders the base product headline for the web experience.
-
-## Features
-
-- Validates user-submitted URLs to ensure they are valid and accessible.
-- Checks if the URL returns a 200 HTTP status code (no 404 or invalid URLs).
-- Retrieves file metadata, such as video size, without downloading the video.
-- Downloads the video in the background.
-- Compresses the video using FFMPEG with efficient settings (`libx264`, `crf 32`).
-- Sends the compressed video back to the user as a downloadable file.
-
-## Reduce 377 MB Video to Just 27 MB in Minutes with This Fast Telegram Bot!
-
-![Telegram Video Compressor Bot](telegram.jpg)
-
-![Telegram Video Compressor Bot](demo.jpg)
-
-## Installation
-
-1. Clone the repository:
+6. Create a production build:
 
    ```bash
-   git clone https://github.com/basemax/telegram-video-compressor.git
-   cd telegram-video-compressor
+   npm run build
    ```
 
-2. Install the required Python packages:
+## Environment Variables
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+The local example file includes the following environment variables for the current web stack and near-term integrations:
 
-3. Install FFMPEG on your system:
+- `DATABASE_URL`
+- `REDIS_URL`
+- `S3_ENDPOINT`
+- `S3_BUCKET`
+- `APP_URL`
+- `NEXTAUTH_URL`
+- `AUTH_SECRET` or `NEXTAUTH_SECRET`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `EMAIL_SERVER`
+- `EMAIL_FROM`
+- `TELEGRAM_BOT_USERNAME`
+- `TELEGRAM_WEBHOOK_SECRET`
+- `TELEGRAM_BOT_TOKEN`
+- `ZARINPAL_MERCHANT_ID`
+- `AGHAPAY_API_KEY`
 
-   ```bash
-   sudo apt update
-   sudo apt install ffmpeg
-   ```
+## Legacy Bot Status
 
-4. Set up your bot token:
-
-Obtain a bot token from **BotFather** on Telegram.
-
-Replace `YOUR_BOT_TOKEN` in the `main.py` script with your actual bot token.
-
-## Usage
-
-Start the bot:
+The historical Python bot entrypoint is deprecated. Running:
 
 ```bash
-python main.py
+python bot.py
 ```
 
-Send a video URL to the bot in Telegram.
+now exits immediately and directs you to run the web app in `apps/web` instead.
 
-The bot will:
-- Validate the URL.
-- Download the video.
-- Compress the video using FFMPEG.
-- Send the compressed video back to you.
+## Notes
 
-## Example
-
-User sends:
-
-```
-https://example.com/video.mp4
-```
-
-
-Bot responds:
-
-```
-✅ URL is valid!
-🔄 Downloading video...
-🗜️ Compressing video...
-📤 Sending compressed video...
-```
-
-## Requirements
-
-- Python 3.7+
-- requests Python library
-- python-telegram-bot library
-- FFMPEG installed on your system
+- `docker-compose.yml` brings up only the local infrastructure dependencies; it does not run the web app itself.
+- MinIO is provisioned as the local S3-compatible endpoint on ports `9000` and `9001`.
+- Some payment and Telegram flows are scaffolded and still depend on real provider credentials and follow-up integration work.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contributing
-
-Contributions are welcome! Please fork this repository and submit a pull request with your changes.
-
-## Contact
-
-Feel free to reach out for any questions or suggestions: **@basemax**
-
-Copyright 2024, Max Base
+This project is licensed under the MIT License. See `LICENSE` for details.

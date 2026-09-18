@@ -19,3 +19,17 @@ export function assertUploadAllowed(input: UploadAllowanceInput) {
     throw new Error("Upload exceeds remaining storage quota.");
   }
 }
+
+export type SubscriptionUsabilityInput = {
+  storageRemainingMb: number;
+  videosRemaining: number;
+  endsAt: Date;
+};
+
+export function isSubscriptionUsable(input: SubscriptionUsabilityInput) {
+  return (
+    input.storageRemainingMb > 0 &&
+    input.videosRemaining > 0 &&
+    input.endsAt.getTime() > Date.now()
+  );
+}
